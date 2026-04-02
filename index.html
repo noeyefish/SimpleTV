@@ -329,8 +329,8 @@
       100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
-    /* Mobile Responsive Support */
-    @media (max-width: 768px) {
+    /* Mobile Responsive Support - Portrait Only */
+    @media (max-width: 768px) and (orientation: portrait) {
       .app-container {
         flex-direction: column-reverse;
       }
@@ -378,6 +378,33 @@
       .empty-state svg {
         width: 32px;
         height: 32px;
+      }
+    }
+
+    /* Small/Medium Screens & Mobile Landscape */
+    @media (max-width: 1024px) and (orientation: landscape) {
+      .sidebar {
+        width: 250px;
+      }
+      .sidebar-header {
+        padding: 20px 15px 15px;
+      }
+      .sidebar-header h1 {
+        font-size: 1.5rem;
+      }
+      .channel-list {
+        padding: 15px;
+      }
+      .main-content {
+        padding: 20px;
+      }
+      .channel-btn {
+        padding: 12px 15px;
+        font-size: 1.05rem;
+      }
+      .channel-btn .icon {
+        width: 34px;
+        height: 34px;
       }
     }
   </style>
