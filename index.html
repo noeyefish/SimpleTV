@@ -470,7 +470,13 @@
       // Destroy old instance if exists
       if (hls) {
         hls.destroy();
+        hls = null;
       }
+      
+      // Reset native video to clear old resources
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
 
       // Load new stream using HLS.js
       if (Hls.isSupported()) {
@@ -486,16 +492,31 @@
         hls.on(Hls.Events.ERROR, function (event, data) {
           if (data.fatal) {
             console.error("HLS fatal error:", data);
-            loader.style.display = 'none';
+            switch (data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                hls.startLoad();
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                hls.recoverMediaError();
+                break;
+              default:
+                hls.destroy();
+                loader.style.display = 'none';
+                break;
+            }
           }
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         // Fallback for Safari natively supporting HLS
         video.src = channel.url;
-        video.addEventListener('loadedmetadata', () => {
+        video.onloadedmetadata = () => {
           loader.style.display = 'none';
           video.play().catch(e => console.error("Playback failed:", e));
-        });
+        };
+        video.onerror = (e) => {
+          console.error("Native playback error:", e);
+          loader.style.display = 'none';
+        };
       }
     }
   </script>
